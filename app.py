@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 
 eng = 'mysql'
 db = 'overhead'
-opersys = 'mac'
+opersys = 'linux'
 table = 'records'
 app = Flask(__name__)
 
