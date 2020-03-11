@@ -10,6 +10,7 @@ load_dotenv()
 eng = 'mysql'
 db = 'overhead'
 table = 'records'
+data_dir = 'data'
 db_cred = os.environ['DB_CRED']
 opersys = os.environ['OPERSYS']
 app = Flask(__name__)
@@ -41,6 +42,13 @@ def hello():
 			if num_rows == 1 and eng == 'mysql':
 				conn.execute(f'ALTER TABLE {table} ADD id int NOT NULL AUTO_INCREMENT primary key FIRST;')
 			return json.dumps({"status": "OK", "value": num_rows})
+		elif request.args['a'] == 'local':
+			query = request.args['q']
+			data = json.loads(query)
+			filename = f"{data_dir}/{data['user_id']}.json"
+			with open(filename, 'w') as f:
+				f.write(query)
+			return json.dumps({"status": "OK", "value": filename})
 		else:
 			return json.dumps({"status": "OK", "value": "Action not supported"})
 	return json.dumps(result)
