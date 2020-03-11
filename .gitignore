@@ -1,5 +1,6 @@
 data/*.json
 data/*
+nohup.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
