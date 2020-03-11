@@ -26,9 +26,9 @@ def get_conn():
 @app.route('/', methods=['GET', 'POST'])
 def hello():
 	result = {"status": "ERROR", "value": "The parameters were not set"}
-	if 'a' in request.args and 'q' in request.args:
-		if request.args['a'] == 'store':
-			query = request.args['q']
+	if 'a' in request.values and 'q' in request.values:
+		if request.values['a'] == 'store':
+			query = request.values['q']
 			data = json.loads(query)
 			record = {}
 			fields = ["TIME", "USER", "PLATFORM", "TYPE", "SUBTYPE", "STATUS", "CURRENT", "EVENT", "EXTRA"]
@@ -42,8 +42,8 @@ def hello():
 			if num_rows == 1 and eng == 'mysql':
 				conn.execute(f'ALTER TABLE {table} ADD id int NOT NULL AUTO_INCREMENT primary key FIRST;')
 			return json.dumps({"status": "OK", "value": num_rows})
-		elif request.args['a'] == 'local':
-			query = request.args['q']
+		elif request.values['a'] == 'local':
+			query = request.values['q']
 			data = json.loads(query)
 			filename = f"{data_dir}/{data['user_id']}.json"
 			with open(filename, 'w') as f:
