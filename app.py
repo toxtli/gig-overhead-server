@@ -26,7 +26,7 @@ def get_conn():
 def hello():
 	result = {"status": "ERROR", "value": "The parameters were not set"}
 	if 'a' in request.args and 'q' in request.args:
-		if request.args['a'] == 'store'
+		if request.args['a'] == 'store':
 			query = request.args['q']
 			data = json.loads(query)
 			record = {}
