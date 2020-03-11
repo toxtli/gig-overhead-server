@@ -22,7 +22,7 @@ def get_conn():
 		con_str = f'mysql+mysqlconnector://{db_cred}@/{db}?unix_socket={unix_sock}'
 		return create_engine(con_str)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def hello():
 	result = {"status": "ERROR", "value": "The parameters were not set"}
 	if 'a' in request.args and 'q' in request.args:
