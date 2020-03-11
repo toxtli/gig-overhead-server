@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import sqlite3
 import pandas as pd
 from dotenv import load_dotenv
@@ -45,7 +46,12 @@ def hello():
 		elif request.values['a'] == 'local':
 			query = request.values['q']
 			data = json.loads(query)
-			filename = f"{data_dir}/{data['user_id']}.json"
+			user_id = data['user_id']
+			timestamp = time.time()
+			dirname = f"{data_dir}/{user_id}"
+			if not os.path.exists(dirname):
+				os.mkdir(dirname)
+			filename = f"{dirname}/{timestamp}.json"
 			with open(filename, 'w') as f:
 				f.write(query)
 			return json.dumps({"status": "OK", "value": filename})
