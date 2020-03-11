@@ -1,13 +1,17 @@
+import os
 import json
 import sqlite3
 import pandas as pd
+from dotenv import load_dotenv
 from flask import Flask, request
 from sqlalchemy import create_engine
 
+load_dotenv()
 eng = 'mysql'
 db = 'overhead'
-opersys = 'linux'
 table = 'records'
+db_cred = os.environ['DB_CRED']
+opersys = os.environ['OPERSYS']
 app = Flask(__name__)
 
 def get_conn():
@@ -15,7 +19,7 @@ def get_conn():
 		return sqlite3.connect("database.db")
 	else:
 		unix_sock = '/Applications/MAMP/tmp/mysql/mysql.sock' if opersys == 'mac' else '/var/run/mysqld/mysqld.sock'
-		con_str = f'mysql+mysqlconnector://root:root@/{db}?unix_socket={unix_sock}'
+		con_str = f'mysql+mysqlconnector://{db_cred}@/{db}?unix_socket={unix_sock}'
 		return create_engine(con_str)
 
 @app.route('/')
