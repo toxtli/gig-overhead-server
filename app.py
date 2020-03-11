@@ -20,24 +20,26 @@ def get_conn():
 
 @app.route('/')
 def hello():
-	if 'q' in request.args:
-		query = request.args['q']
-		data = json.loads(query)
-		record = {}
-		fields = ["TIME", "USER", "PLATFORM", "TYPE", "SUBTYPE", "STATUS", "CURRENT", "EVENT", "EXTRA"]
-		for i, value in enumerate(fields):
-			record[value] = data[i]
-		df = pd.DataFrame([record])
-		conn = get_conn()
-		df.to_sql(table, conn, if_exists='append', index=False)
-		res = pd.read_sql('SELECT COUNT(*) as size FROM records', conn)
-		num_rows = int(res.loc[0]['size'])
-		if num_rows == 1 and db == 'mysql':
-			conn.execute(f'ALTER TABLE {table} ADD id int NOT NULL AUTO_INCREMENT primary key FIRST;')
-		result = {"status": "OK", "value": num_rows}
-		return json.dumps(result)
-	else:
-		return json.dumps({"status": "ERROR", "value":"No parameters"})
+	result = {"status": "ERROR", "value": "The parameters were not set"}
+	if 'a' in request.args and 'q' in request.args:
+		if request.args['a'] == 'store'
+			query = request.args['q']
+			data = json.loads(query)
+			record = {}
+			fields = ["TIME", "USER", "PLATFORM", "TYPE", "SUBTYPE", "STATUS", "CURRENT", "EVENT", "EXTRA"]
+			for i, value in enumerate(fields):
+				record[value] = data[i]
+			df = pd.DataFrame([record])
+			conn = get_conn()
+			df.to_sql(table, conn, if_exists='append', index=False)
+			res = pd.read_sql('SELECT COUNT(*) as size FROM records', conn)
+			num_rows = int(res.loc[0]['size'])
+			if num_rows == 1 and eng == 'mysql':
+				conn.execute(f'ALTER TABLE {table} ADD id int NOT NULL AUTO_INCREMENT primary key FIRST;')
+			return json.dumps({"status": "OK", "value": num_rows})
+		else:
+			return json.dumps({"status": "OK", "value": "Action not supported"})
+	return json.dumps(result)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0')
