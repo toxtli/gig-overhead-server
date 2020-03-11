@@ -47,7 +47,7 @@ def hello():
 			query = request.values['q']
 			data = json.loads(query)
 			user_id = data['user_id']
-			timestamp = time.time()
+			timestamp = int(time.time())
 			dirname = f"{data_dir}/{user_id}"
 			if not os.path.exists(dirname):
 				os.mkdir(dirname)
