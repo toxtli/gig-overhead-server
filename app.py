@@ -9,12 +9,11 @@ from sqlalchemy import create_engine
 
 load_dotenv()
 eng = 'mysql'
-db = 'overhead_all'
+db = 'overhead'
 table = 'records'
 data_dir = 'data'
 db_cred = os.environ['DB_CRED']
 opersys = os.environ['OPERSYS']
-con = None
 app = Flask(__name__)
 
 def get_conn():
@@ -23,9 +22,7 @@ def get_conn():
 	else:
 		unix_sock = '/Applications/MAMP/tmp/mysql/mysql.sock' if opersys == 'mac' else '/var/run/mysqld/mysqld.sock'
 		con_str = f'mysql+mysqlconnector://{db_cred}@/{db}?unix_socket={unix_sock}'
-		if con is None:
-			con = create_engine(con_str)
-		return con
+		return create_engine(con_str)
 
 @app.route('/', methods=['GET', 'POST'])
 def hello():
