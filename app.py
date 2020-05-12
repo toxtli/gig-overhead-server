@@ -31,6 +31,7 @@ def get_conn():
 @app.route('/', methods=['GET', 'POST'])
 def hello():
 	result = {"status": "ERROR", "value": "The parameters were not set"}
+	use_count = False
 	if 'a' in request.values and 'q' in request.values:
 		if request.values['a'] == 'store':
 			query = request.values['q']
@@ -42,8 +43,11 @@ def hello():
 			df = pd.DataFrame([record])
 			conn = get_conn()
 			df.to_sql(table, conn, if_exists='append', index=False)
-			res = pd.read_sql('SELECT COUNT(*) as size FROM records', conn)
-			num_rows = int(res.loc[0]['size'])
+			if use_count:
+				res = pd.read_sql('SELECT COUNT(*) as size FROM records', conn)
+				num_rows = int(res.loc[0]['size'])
+			else:
+				num_rows = 0
 			if num_rows == 1 and eng == 'mysql':
 				conn.execute(f'ALTER TABLE {table} ADD id int NOT NULL AUTO_INCREMENT primary key FIRST;')
 			return json.dumps({"status": "OK", "value": num_rows})
