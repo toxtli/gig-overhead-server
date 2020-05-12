@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 
 load_dotenv()
 eng = 'mysql'
-db = 'overhead'
+db = 'overhead_all'
 table = 'records'
 data_dir = 'data'
 db_cred = os.environ['DB_CRED']
