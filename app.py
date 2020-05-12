@@ -15,14 +15,18 @@ data_dir = 'data'
 db_cred = os.environ['DB_CRED']
 opersys = os.environ['OPERSYS']
 app = Flask(__name__)
+con = None
 
 def get_conn():
+	global con
 	if eng == 'sqlite':
 		return sqlite3.connect("database.db")
 	else:
 		unix_sock = '/Applications/MAMP/tmp/mysql/mysql.sock' if opersys == 'mac' else '/var/run/mysqld/mysqld.sock'
 		con_str = f'mysql+mysqlconnector://{db_cred}@/{db}?unix_socket={unix_sock}'
-		return create_engine(con_str)
+		if con is None:
+			con = create_engine(con_str)
+		return con
 
 @app.route('/', methods=['GET', 'POST'])
 def hello():
