@@ -14,6 +14,7 @@ table = 'records'
 data_dir = 'data'
 db_cred = os.environ['DB_CRED']
 opersys = os.environ['OPERSYS']
+con = None
 app = Flask(__name__)
 
 def get_conn():
@@ -22,7 +23,9 @@ def get_conn():
 	else:
 		unix_sock = '/Applications/MAMP/tmp/mysql/mysql.sock' if opersys == 'mac' else '/var/run/mysqld/mysqld.sock'
 		con_str = f'mysql+mysqlconnector://{db_cred}@/{db}?unix_socket={unix_sock}'
-		return create_engine(con_str)
+		if con is None:
+			con = create_engine(con_str)
+		return con
 
 @app.route('/', methods=['GET', 'POST'])
 def hello():
