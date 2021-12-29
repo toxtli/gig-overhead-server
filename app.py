@@ -8,12 +8,10 @@ from flask import Flask, request
 from sqlalchemy import create_engine
 
 load_dotenv()
-eng = 'mysql'
+eng = 'sqlite'
 db = 'overhead_all'
 table = 'records'
 data_dir = 'data'
-db_cred = os.environ['DB_CRED']
-opersys = os.environ['OPERSYS']
 app = Flask(__name__)
 con = None
 
@@ -22,6 +20,8 @@ def get_conn():
 	if eng == 'sqlite':
 		return sqlite3.connect("database.db")
 	else:
+		db_cred = os.environ['DB_CRED']
+		opersys = os.environ['OPERSYS']
 		unix_sock = '/Applications/MAMP/tmp/mysql/mysql.sock' if opersys == 'mac' else '/var/run/mysqld/mysqld.sock'
 		con_str = f'mysql+mysqlconnector://{db_cred}@/{db}?unix_socket={unix_sock}'
 		if con is None:
