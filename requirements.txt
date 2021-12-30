@@ -2,6 +2,7 @@
 # https://github.com/damnever/pigar
 
 Flask
+flask-cors
 SQLAlchemy
 pandas
 python_dotenv

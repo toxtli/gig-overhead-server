@@ -3,6 +3,7 @@ import json
 import time
 import sqlite3
 import pandas as pd
+from flask_cors import CORS
 from dotenv import load_dotenv
 from flask import Flask, request
 from sqlalchemy import create_engine
@@ -13,6 +14,7 @@ db = 'overhead_all'
 table = 'records'
 data_dir = 'data'
 app = Flask(__name__)
+CORS(app)
 con = None
 
 def get_conn():
