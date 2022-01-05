@@ -1,20 +1,25 @@
 import os
 import json
 import time
+
 import sqlite3
 import pandas as pd
-from flask_cors import CORS
 from dotenv import load_dotenv
-from flask import Flask, request
 from sqlalchemy import create_engine
+
+from flask_cors import CORS
+from flask import Flask, request
+from flask_socketio import SocketIO, send, emit
 
 load_dotenv()
 eng = 'sqlite'
-db = 'overhead_all'
+db = 'toloka_all'
 table = 'records'
 data_dir = 'data'
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 con = None
 
 def get_conn():
@@ -30,7 +35,7 @@ def get_conn():
 			con = create_engine(con_str)
 		return con
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/api', methods=['GET', 'POST'])
 def hello():
 	result = {"status": "ERROR", "value": "The parameters were not set"}
 	use_count = False
@@ -69,6 +74,24 @@ def hello():
 			return json.dumps({"status": "OK", "value": "Action not supported"})
 	return json.dumps(result)
 
+@socketio.on('myevent')
+def handle_myevent(data):
+	# print('myevent')
+	df = pd.DataFrame(data).applymap(str)
+	df.to_sql('stream', get_conn(), if_exists='append', index=False)
+	emit('myresponse', data, broadcast=True)
+
+@socketio.on('connect')
+def test_connect(auth):
+	# print('Client connected')
+	emit('myresponse', {'data': 'Connected'})
+
+@socketio.on('disconnect')
+def test_disconnect():
+    # print('Client disconnected')
+    pass
+
 if __name__ == '__main__':
 	# app.run(host='0.0.0.0', ssl_context='adhoc')
-	app.run(host='0.0.0.0')
+	# app.run(host='0.0.0.0')
+	socketio.run(app, host='0.0.0.0')

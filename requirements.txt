@@ -2,7 +2,9 @@
 # https://github.com/damnever/pigar
 
 Flask
+eventlet
 flask-cors
+flask_socketio
 SQLAlchemy
 pandas
 python_dotenv
